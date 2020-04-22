@@ -34,9 +34,26 @@ public class ClientHandlerJob extends AbstractJob {
         while (!this.isCancelled()) {
             JSONObject request = this.socketConnection.receive();
             if (request != null) {
-                RequestProcessJob job = new RequestProcessJob(
-                        this.socketConnection, request);
-                this.requestProcessJobExecutor.queue(job);
+                if (!request.containsKey(Constants.PING_OPERATION)) {
+                    MessageNotifier.getInstance()
+                            .onMessageChanged(String.format(
+                                    "Received message from client [%s]. Content: %s",
+                                    this.socketConnection.getHostAddress(),
+                                    request.toJSONString()));
+                }
+
+                if (!request.containsKey(Constants.SHUTDOWN_OPERATION)) {
+                    RequestProcessJob job = new RequestProcessJob(
+                            this.socketConnection, request);
+                    this.requestProcessJobExecutor.queue(job);
+                } else {
+                    MessageNotifier.getInstance()
+                            .onMessageChanged(String.format(
+                                    "Client [%s] is shuting down.",
+                                    this.socketConnection.getHostAddress()));
+                    this.cancel();
+                    this.socketConnection.cleanUp();
+                }
             }
         }
 

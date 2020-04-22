@@ -55,6 +55,12 @@ public class AcceptorJob extends AbstractJob {
                         client);
                 SocketManager.getInstance().put(connection);
 
+                // Notify message to the main scene.
+                MessageNotifier.getInstance()
+                        .onMessageChanged(String.format(
+                                "Accepted a new client connection [%s]",
+                                client.getInetAddress().getHostAddress()));
+
                 // Instantiate the client handler job.
                 ClientHandlerJob job = new ClientHandlerJob(connection,
                         this.requestProcessJobExecutor);

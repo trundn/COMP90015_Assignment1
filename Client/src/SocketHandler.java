@@ -111,7 +111,10 @@ public class SocketHandler {
         String message = "";
 
         try {
+            this.cleanUp();
+
             this.socket = new Socket(this.hostAddress, this.port);
+
             this.outputStream = new ObjectOutputStream(
                     this.socket.getOutputStream());
             this.inputStream = new ObjectInputStream(
@@ -175,7 +178,6 @@ public class SocketHandler {
      *
      * @return the JSON object
      */
-    @SuppressWarnings("unchecked")
     public JSONObject receive() {
         JSONObject response = null;
 
@@ -197,9 +199,28 @@ public class SocketHandler {
      */
     public void cleanUp() {
         try {
-            this.socket.close();
+            if (this.inputStream != null) {
+                this.inputStream.close();
+            }
+
+            if (this.outputStream != null) {
+                this.outputStream.close();
+            }
+
+            if (this.socket != null) {
+                this.socket.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Notify shut down.
+     */
+    public void notifyShutDown() {
+        // Send shutdown notification to server.
+        JSONObject request = RequestBuilder.buildShutDownRequest(this.getHostAddress());
+        this.send(request);
     }
 }

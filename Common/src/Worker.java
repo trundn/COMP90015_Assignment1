@@ -34,7 +34,7 @@ public class Worker extends Thread {
     @Override
     public void run() {
         try {
-            if (!isStopped.get()) {
+            while (!isStopped.get()) {
                 Runnable runnable = jobQueue.take();
                 if (runnable != null) {
                     this.handlingJobList.add(runnable);
@@ -42,7 +42,7 @@ public class Worker extends Thread {
                 }
             }
         } catch (RuntimeException | InterruptedException ex) {
-            ex.printStackTrace();
+            //ex.printStackTrace();
         }
     }
 

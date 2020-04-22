@@ -52,6 +52,21 @@ public class SocketConnection {
     }
 
     /**
+     * Gets the host address.
+     *
+     * @return the host address
+     */
+    public String getHostAddress() {
+        String address = null;
+
+        if (this.clientSocket != null) {
+            address = this.clientSocket.getInetAddress().getHostAddress();
+        }
+
+        return address;
+    }
+
+    /**
      * Send.
      *
      * @param request the request
@@ -92,11 +107,32 @@ public class SocketConnection {
                 System.out.println(
                         "Received request from client. Content: " + request);
             } catch (IOException | ClassNotFoundException ex) {
-                // Do nothing here.
+                ex.printStackTrace();
             }
         }
 
         return request;
+    }
+
+    /**
+     * Clean up.
+     */
+    public void cleanUp() {
+        try {
+            if (this.inputStream != null) {
+                this.inputStream.close();
+            }
+
+            if (this.outputStream != null) {
+                this.outputStream.close();
+            }
+
+            if (this.clientSocket != null) {
+                this.clientSocket.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

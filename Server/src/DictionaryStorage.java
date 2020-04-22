@@ -8,12 +8,12 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 /**
- * The Class DictionaryManager.
+ * The Class DictionaryStorage.
  */
-public class DictionaryManager {
+public class DictionaryStorage {
 
     /** The instance. */
-    private static DictionaryManager INSTANCE;
+    private static DictionaryStorage INSTANCE;
 
     /** The file path. */
     private String filePath;
@@ -22,15 +22,16 @@ public class DictionaryManager {
     private JSONObject dictionary;
 
     /**
-     * Gets the single instance of DictionaryManager.
+     * Gets the single instance of DictionaryStorage.
      *
-     * @return single instance of DictionaryManager
+     * @return single instance of DictionaryStorage
      */
-    public static DictionaryManager getInstance() {
+    public static DictionaryStorage getInstance() {
         if (INSTANCE == null) {
-            synchronized (DictionaryManager.class) {
-                if (INSTANCE == null)
-                    INSTANCE = new DictionaryManager();
+            synchronized (DictionaryStorage.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new DictionaryStorage();
+                }
             }
         }
 
@@ -42,7 +43,7 @@ public class DictionaryManager {
      *
      * @param filePath the file path
      */
-    public boolean loadDictionary(String filePath) {
+    public boolean load(String filePath) {
         boolean result = true;
 
         try {
@@ -65,7 +66,7 @@ public class DictionaryManager {
     /**
      * Persist dictionary.
      */
-    public void persistDictionary() {
+    public void persist() {
         if (this.dictionary != null) {
             if (!StringHelper.isNullOrEmpty(this.filePath)) {
 
@@ -105,6 +106,29 @@ public class DictionaryManager {
     }
 
     /**
+     * Delete.
+     *
+     * @param word the word
+     * @return the JSON object
+     */
+    @SuppressWarnings("unchecked")
+    public synchronized JSONObject delete(String word) {
+        JSONObject response = new JSONObject();
+        String searchKey = word.toLowerCase();
+
+        if (this.dictionary.containsKey(searchKey)) {
+            this.dictionary.remove(searchKey);
+            response.put(Constants.RESPONSE_KEY,
+                    String.format(Constants.SUCCESSFULLY_DELETED_WORD, word));
+        } else {
+            response.put(Constants.RESPONSE_KEY,
+                    String.format(Constants.WORD_NOT_FOUND, word));
+        }
+
+        return response;
+    }
+
+    /**
      * Adds the.
      *
      * @param word    the word
@@ -123,29 +147,6 @@ public class DictionaryManager {
             this.dictionary.put(searchKey, meaning);
             response.put(Constants.RESPONSE_KEY,
                     String.format(Constants.SUCCESSFULLY_ADDED_WORD, word));
-        }
-
-        return response;
-    }
-
-    /**
-     * Delete.
-     *
-     * @param word the word
-     * @return the JSON object
-     */
-    @SuppressWarnings("unchecked")
-    public synchronized JSONObject delete(String word) {
-        JSONObject response = new JSONObject();
-        String searchKey = word.toLowerCase();
-
-        if (this.dictionary.containsKey(searchKey)) {
-            this.dictionary.remove(searchKey);
-            response.put(Constants.RESPONSE_KEY,
-                    String.format(Constants.SUCCESSFULLY_DELETED_WORD, word));
-        } else {
-            response.put(Constants.RESPONSE_KEY,
-                    String.format(Constants.WORD_NOT_FOUND, word));
         }
 
         return response;

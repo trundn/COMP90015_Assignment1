@@ -30,6 +30,14 @@ public class DictionaryClient extends Application {
                 String hostAddress = args[0];
                 int port = Integer.parseInt(args[1]);
 
+                if (port < Constants.MIN_PORT_NUMBER
+                        || port > Constants.MAX_PORT_NUMBER) {
+                    throw new IllegalArgumentException("Invalid port number: "
+                            + port + ". It must be in range ("
+                            + Constants.MIN_PORT_NUMBER + ", "
+                            + Constants.MAX_PORT_NUMBER + ").");
+                }
+
                 SocketHandler controller = SocketHandler.getInstance();
                 controller.setPort(port);
                 controller.setHostAddress(hostAddress);
@@ -56,6 +64,7 @@ public class DictionaryClient extends Application {
         sceneController = loader.getController();
 
         primaryStage.setScene(new Scene(root));
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 

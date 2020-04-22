@@ -1,13 +1,11 @@
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+
+import org.json.simple.JSONObject;
 
 /**
  * The Class PingJob.
  */
 public class PingJob extends AbstractJob {
-
-    /** The ping data. */
-    private final int PING_DATA = 0xFF;
 
     /**
      * Call.
@@ -19,20 +17,15 @@ public class PingJob extends AbstractJob {
     protected Void call() throws Exception {
         SocketHandler handler = SocketHandler.getInstance();
         while (!this.isCancelled()) {
-            try {
-                String error = handler.send(RequestBuilder.buildPingRequest());
-                if (!StringHelper.isNullOrEmpty(error)) {
-                    handler.setConnected(false);
-                    updateMessage("Failed to ping to server. Error: " + error);
-                }
-                // handler.sendUrgentData(PING_DATA);
-            } catch (Exception ex) {
-//                handler.setConnected(false);
-//                updateMessage(
-//                        "Failed to ping to server. Error: " + ex.getMessage());
+            JSONObject pingReq = RequestBuilder
+                    .buildPingRequest(handler.getHostAddress());
+            String error = handler.send(pingReq);
+            if (!StringHelper.isNullOrEmpty(error)) {
+                handler.setConnected(false);
+                updateMessage("Failed to ping to server. Error: " + error);
             }
 
-            TimeUnit.SECONDS.sleep(5);
+            TimeUnit.SECONDS.sleep(3);
         }
 
         return null;

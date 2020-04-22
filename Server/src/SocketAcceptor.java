@@ -25,9 +25,9 @@ public class SocketAcceptor {
     private ThreadPoolJobExecutor requestProcessJobExecutor;
 
     /**
-     * Gets the single instance of SocketManager.
+     * Gets the single instance of SocketAcceptor.
      *
-     * @return single instance of SocketManager
+     * @return single instance of SocketAcceptor
      */
     public static SocketAcceptor getInstance() {
         if (INSTANCE == null) {
@@ -56,13 +56,13 @@ public class SocketAcceptor {
     }
 
     /**
-     * Launch acceptor.
+     * Launch.
      *
      * @param port           the port
      * @param dictionaryPath the dictionary path
      */
     public void launch(int port, String dictionaryPath) {
-        if (DictionaryManager.getInstance().loadDictionary(dictionaryPath)) {
+        if (DictionaryStorage.getInstance().load(dictionaryPath)) {
             try {
                 AcceptorJob job = new AcceptorJob(port,
                         this.connectionProcessExecutor,

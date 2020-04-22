@@ -3,6 +3,19 @@
  * The Class Constants.
  */
 public class Constants {
+    
+    /** The Constant MIN_PORT_NUMBER. */
+    public static final int MIN_PORT_NUMBER = 1100;
+    
+    /** The Constant MAX_PORT_NUMBER. */
+    public static final int MAX_PORT_NUMBER = 49151;
+    
+    /** The new line. */
+    public static final String NEW_LINE = System.getProperty("line.separator");
+
+    /** The charset name. */
+    public static final String CHARSET_NAME = "UTF-8";
+
     /** The operation key. */
     public static final String OPERATION_KEY = "operation";
 
@@ -12,6 +25,9 @@ public class Constants {
     /** The Constant MEANING_KEY. */
     public static final String MEANING_KEY = "meaning";
     
+    /** The Constant SHUTDOWN_OPERATION. */
+    public static final String SHUTDOWN_OPERATION = "shutdown";
+
     /** The Constant PING_OPERATION. */
     public static final String PING_OPERATION = "ping";
 

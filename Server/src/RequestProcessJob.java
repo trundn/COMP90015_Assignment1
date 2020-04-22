@@ -33,8 +33,12 @@ public class RequestProcessJob extends AbstractJob {
      * @param response the response
      */
     private void sendResponse(JSONObject response) {
-        if (connection != null) {
-            connection.send(response);
+        if (this.connection != null) {
+            MessageNotifier.getInstance().onMessageChanged(String.format(
+                    "Sending response message to client [%s]. Content: %s",
+                    this.connection.getHostAddress(), response.toJSONString()));
+
+            this.connection.send(response);
         }
     }
 
@@ -47,8 +51,8 @@ public class RequestProcessJob extends AbstractJob {
     @Override
     protected Void call() throws Exception {
         if (!this.isCancelled()) {
-            // Get the dictionary manager instance.
-            DictionaryManager dictManager = DictionaryManager.getInstance();
+            // Get the dictionary storage instance.
+            DictionaryStorage dictStorage = DictionaryStorage.getInstance();
 
             // Get the request operation.
             JSONObject response;
@@ -62,18 +66,18 @@ public class RequestProcessJob extends AbstractJob {
                 switch (operation) {
                 case Constants.SEARCH_OPERATION:
                     word = request.get(Constants.WORD_KEY).toString();
-                    response = dictManager.search(word);
+                    response = dictStorage.search(word);
                     this.sendResponse(response);
                     break;
                 case Constants.DELETE_OPERATION:
                     word = request.get(Constants.WORD_KEY).toString();
-                    response = dictManager.delete(word);
+                    response = dictStorage.delete(word);
                     this.sendResponse(response);
                     break;
                 case Constants.ADD_OPERATION:
                     word = request.get(Constants.WORD_KEY).toString();
                     meaning = request.get(Constants.MEANING_KEY).toString();
-                    response = dictManager.add(word, meaning);
+                    response = dictStorage.add(word, meaning);
                     this.sendResponse(response);
                     break;
                 default:

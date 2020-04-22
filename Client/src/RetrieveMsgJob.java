@@ -6,18 +6,6 @@ import org.json.simple.JSONObject;
  */
 public class RetrieveMsgJob extends AbstractJob {
 
-    /** The scene callback. */
-    private ScenceCallback sceneCallback;
-
-    /**
-     * Instantiates a new retrieve message job.
-     *
-     * @param sceneCallback the scene callback
-     */
-    public RetrieveMsgJob(ScenceCallback sceneCallback) {
-        this.sceneCallback = sceneCallback;
-    }
-
     /**
      * Call.
      *
@@ -37,13 +25,7 @@ public class RetrieveMsgJob extends AbstractJob {
                             response.get(Constants.RESPONSE_KEY).toString());
 
                 }
-
-                // Enable all buttons on target scene
-                if (this.sceneCallback != null) {
-                    this.sceneCallback.onEnableAllButtons();
-                }
             }
-
         }
 
         return null;

@@ -18,7 +18,7 @@ import javafx.stage.Window;
 /**
  * The Class SceneController.
  */
-public class SceneController implements Initializable, ScenceCallback {
+public class SceneController implements Initializable {
 
     /** The message label. */
     @FXML
@@ -48,9 +48,6 @@ public class SceneController implements Initializable, ScenceCallback {
     @FXML
     private Button addButton;
 
-    /** The new line. */
-    private String newLine = System.getProperty("line.separator");
-
     /** The ping job. */
     private PingJob pingJob;
 
@@ -64,26 +61,6 @@ public class SceneController implements Initializable, ScenceCallback {
     private ThreadPoolJobExecutor jobExecutor;
 
     /**
-     * On enable all buttons.
-     */
-    @Override
-    public void onEnableAllButtons() {
-        this.searchButton.setDisable(false);
-        this.addButton.setDisable(false);
-        this.deleteButton.setDisable(false);
-    }
-
-    /**
-     * On disable all buttons.
-     */
-    @Override
-    public void onDisableAllButtons() {
-//        this.searchButton.setDisable(true);
-//        this.addButton.setDisable(true);
-//        this.deleteButton.setDisable(true);
-    }
-
-    /**
      * Handle send request.
      *
      * @param request the request
@@ -92,11 +69,9 @@ public class SceneController implements Initializable, ScenceCallback {
         SocketHandler handler = SocketHandler.getInstance();
         String error = handler.send(request);
 
-        if (StringHelper.isNullOrEmpty(error)) {
-            this.onDisableAllButtons();
-        } else {
+        if (!StringHelper.isNullOrEmpty(error)) {
             this.appLogArea.appendText(error);
-            this.appLogArea.appendText(this.newLine);
+            this.appLogArea.appendText(Constants.NEW_LINE);
         }
     }
 
@@ -107,7 +82,7 @@ public class SceneController implements Initializable, ScenceCallback {
      */
     @FXML
     protected void handleSearchButtonAction(ActionEvent event) {
-        Window owner = deleteButton.getScene().getWindow();
+        Window owner = searchButton.getScene().getWindow();
         String word = wordInput.getText().toLowerCase();
 
         if (StringHelper.isNullOrEmpty(word)) {
@@ -145,7 +120,7 @@ public class SceneController implements Initializable, ScenceCallback {
      */
     @FXML
     protected void handleAddButtonAction(ActionEvent event) {
-        Window owner = deleteButton.getScene().getWindow();
+        Window owner = addButton.getScene().getWindow();
         String word = wordInput.getText().toLowerCase();
         String meaning = meaningArea.getText();
 
@@ -172,7 +147,7 @@ public class SceneController implements Initializable, ScenceCallback {
         // Instantiate needed jobs.
         this.pingJob = new PingJob();
         this.tryConnectJob = new TryConnectJob();
-        this.retrieveMsgJob = new RetrieveMsgJob(this);
+        this.retrieveMsgJob = new RetrieveMsgJob();
 
         try {
             this.jobExecutor = new ThreadPoolJobExecutor(-1, 3, 3);
@@ -184,19 +159,19 @@ public class SceneController implements Initializable, ScenceCallback {
             this.pingJob.messageProperty()
                     .addListener((obs, oldMessage, newMessage) -> {
                         this.appLogArea.appendText(newMessage);
-                        this.appLogArea.appendText(this.newLine);
+                        this.appLogArea.appendText(Constants.NEW_LINE);
                     });
 
             this.tryConnectJob.messageProperty()
                     .addListener((obs, oldMessage, newMessage) -> {
                         this.appLogArea.appendText(newMessage);
-                        this.appLogArea.appendText(this.newLine);
+                        this.appLogArea.appendText(Constants.NEW_LINE);
                     });
 
             this.retrieveMsgJob.messageProperty()
                     .addListener((obs, oldMessage, newMessage) -> {
                         this.appLogArea.appendText(newMessage);
-                        this.appLogArea.appendText(this.newLine);
+                        this.appLogArea.appendText(Constants.NEW_LINE);
                     });
 
         } catch (Exception e) {
@@ -209,11 +184,14 @@ public class SceneController implements Initializable, ScenceCallback {
      */
     public void unInitialize() {
         try {
+            // Send shutdown notification to server.
+            SocketHandler.getInstance().notifyShutDown();
+
             this.jobExecutor.terminate();
             this.jobExecutor
                     .waitForTermination(Duration.ofSeconds(5).toMillis());
 
-            // Clean up resource for socket handler.
+            // Clean up resources.
             SocketHandler.getInstance().cleanUp();
         } catch (TimeoutException e) {
             this.jobExecutor.forceInterrupt();
