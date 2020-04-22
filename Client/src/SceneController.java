@@ -83,14 +83,20 @@ public class SceneController implements Initializable {
     @FXML
     protected void handleSearchButtonAction(ActionEvent event) {
         Window owner = searchButton.getScene().getWindow();
-        String word = wordInput.getText().toLowerCase();
+        String word = wordInput.getText().toLowerCase().trim();
 
         if (StringHelper.isNullOrEmpty(word)) {
             AlertHelper.showAlert(AlertType.ERROR, owner, "Error",
                     "The word is not specified.");
         } else {
-            JSONObject request = RequestBuilder.buildSearchRequest(word);
-            this.handleSendRequest(request);
+            if (!word.chars().allMatch(Character::isLetter)) {
+                AlertHelper.showAlert(AlertType.ERROR, owner, "Error",
+                        "The word only accept letters (no space character).");
+            } else {
+                JSONObject request = RequestBuilder.buildSearchRequest(word);
+                this.handleSendRequest(request);
+            }
+
         }
     }
 
@@ -102,14 +108,19 @@ public class SceneController implements Initializable {
     @FXML
     protected void handleDeleteButtonAction(ActionEvent event) {
         Window owner = deleteButton.getScene().getWindow();
-        String word = wordInput.getText().toLowerCase();
+        String word = wordInput.getText().toLowerCase().trim();
 
         if (StringHelper.isNullOrEmpty(word)) {
             AlertHelper.showAlert(AlertType.ERROR, owner, "Error",
                     "The word is not specified.");
         } else {
-            JSONObject request = RequestBuilder.buildDeleteRequest(word);
-            this.handleSendRequest(request);
+            if (!word.chars().allMatch(Character::isLetter)) {
+                AlertHelper.showAlert(AlertType.ERROR, owner, "Error",
+                        "The word only accept letters (no space character).");
+            } else {
+                JSONObject request = RequestBuilder.buildDeleteRequest(word);
+                this.handleSendRequest(request);
+            }
         }
     }
 
@@ -121,7 +132,7 @@ public class SceneController implements Initializable {
     @FXML
     protected void handleAddButtonAction(ActionEvent event) {
         Window owner = addButton.getScene().getWindow();
-        String word = wordInput.getText().toLowerCase();
+        String word = wordInput.getText().toLowerCase().trim();
         String meaning = meaningArea.getText();
 
         if (StringHelper.isNullOrEmpty(word)) {
@@ -131,8 +142,14 @@ public class SceneController implements Initializable {
             AlertHelper.showAlert(AlertType.ERROR, owner, "Error",
                     "The meaning is not specified.");
         } else {
-            JSONObject request = RequestBuilder.buildAddRequest(word, meaning);
-            this.handleSendRequest(request);
+            if (!word.chars().allMatch(Character::isLetter)) {
+                AlertHelper.showAlert(AlertType.ERROR, owner, "Error",
+                        "The word only accept letters (no space character).");
+            } else {
+                JSONObject request = RequestBuilder.buildAddRequest(word,
+                        meaning);
+                this.handleSendRequest(request);
+            }
         }
     }
 
