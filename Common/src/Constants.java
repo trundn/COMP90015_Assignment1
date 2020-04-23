@@ -3,13 +3,13 @@
  * The Class Constants.
  */
 public class Constants {
-    
+
     /** The Constant MIN_PORT_NUMBER. */
-    public static final int MIN_PORT_NUMBER = 1100;
-    
+    public static final int MIN_PORT_NUMBER = 1024;
+
     /** The Constant MAX_PORT_NUMBER. */
     public static final int MAX_PORT_NUMBER = 49151;
-    
+
     /** The new line. */
     public static final String NEW_LINE = System.getProperty("line.separator");
 
@@ -24,7 +24,7 @@ public class Constants {
 
     /** The Constant MEANING_KEY. */
     public static final String MEANING_KEY = "meaning";
-    
+
     /** The Constant SHUTDOWN_OPERATION. */
     public static final String SHUTDOWN_OPERATION = "shutdown";
 
@@ -45,6 +45,9 @@ public class Constants {
 
     /** The Constant RESPONSE_KEY. */
     public static final String RESPONSE_KEY = "response";
+
+    /** The Constant RESPONE_MEANING_KEY. */
+    public static final String RESPONE_MEANING_KEY = "meaningResponse";
 
     /** The Constant SUCCESSFULLY_ADDED_WORD. */
     public static final String SUCCESSFULLY_ADDED_WORD = "Successfully added word [%s] in the dictionary.";

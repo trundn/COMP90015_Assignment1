@@ -18,7 +18,7 @@ import javafx.stage.Window;
 /**
  * The Class SceneController.
  */
-public class SceneController implements Initializable {
+public class SceneController implements Initializable, ScenceCallback {
 
     /** The message label. */
     @FXML
@@ -93,6 +93,7 @@ public class SceneController implements Initializable {
                 AlertHelper.showAlert(AlertType.ERROR, owner, "Error",
                         "The word only accept letters (no space character).");
             } else {
+                this.meaningArea.clear();
                 JSONObject request = RequestBuilder.buildSearchRequest(word);
                 this.handleSendRequest(request);
             }
@@ -118,6 +119,7 @@ public class SceneController implements Initializable {
                 AlertHelper.showAlert(AlertType.ERROR, owner, "Error",
                         "The word only accept letters (no space character).");
             } else {
+                this.meaningArea.clear();
                 JSONObject request = RequestBuilder.buildDeleteRequest(word);
                 this.handleSendRequest(request);
             }
@@ -213,6 +215,17 @@ public class SceneController implements Initializable {
         } catch (TimeoutException e) {
             this.jobExecutor.forceInterrupt();
         }
+    }
+
+    /**
+     * On message changed.
+     *
+     * @param newMessage the new message
+     */
+    @Override
+    public void onMessageChanged(String newMessage) {
+        this.meaningArea.setText(newMessage);
+
     }
 
 }

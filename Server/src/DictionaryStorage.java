@@ -96,7 +96,7 @@ public class DictionaryStorage {
 
         if (this.dictionary.containsKey(searchKey)) {
             String meaning = this.dictionary.get(searchKey).toString();
-            response.put(Constants.RESPONSE_KEY, meaning);
+            response.put(Constants.RESPONE_MEANING_KEY, meaning);
         } else {
             response.put(Constants.RESPONSE_KEY,
                     String.format(Constants.WORD_NOT_FOUND, word));

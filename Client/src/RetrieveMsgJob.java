@@ -24,6 +24,10 @@ public class RetrieveMsgJob extends AbstractJob {
                     updateMessage(
                             response.get(Constants.RESPONSE_KEY).toString());
 
+                } else if (response
+                        .containsKey(Constants.RESPONE_MEANING_KEY)) {
+                    MessageNotifier.getInstance().onMessageChanged(response
+                            .get(Constants.RESPONE_MEANING_KEY).toString());
                 }
             }
         }

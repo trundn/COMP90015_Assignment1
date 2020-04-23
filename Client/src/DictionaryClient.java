@@ -63,6 +63,9 @@ public class DictionaryClient extends Application {
         Parent root = loader.load();
         sceneController = loader.getController();
 
+        // Register the scene callback.
+        MessageNotifier.getInstance().registerSceneCallback(sceneController);
+
         primaryStage.setScene(new Scene(root));
         primaryStage.setResizable(false);
         primaryStage.show();
